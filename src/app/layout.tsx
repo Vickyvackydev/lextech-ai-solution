@@ -1,16 +1,8 @@
-"use client";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
-import { auth } from "./api/auth/[...nextauth]/auth";
 import { Toaster } from "react-hot-toast";
-import { QueryClientProvider } from "react-query";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { persistor, Store } from "@/states/store";
-import { queryClient } from "@/config";
-import DashboardLayout from "@/shared/Layouts/DashboardLayout";
+import ClientProviders from "@/provider/clientProviders";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,17 +32,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <PersistGate persistor={persistor}>
-          <Provider store={Store}>
-            <QueryClientProvider client={queryClient}>
-              <SessionProvider>
-                {/* <DashboardLayout> */}
-                <main>{children}</main>
-                {/* </DashboardLayout> */}
-              </SessionProvider>
-            </QueryClientProvider>
-          </Provider>
-        </PersistGate>
+        <ClientProviders>
+          {/* <DashboardLayout> */}
+          <main>{children}</main>
+          {/* </DashboardLayout> */}
+        </ClientProviders>
+
         <Toaster position="top-right" reverseOrder={false} />
       </body>
     </html>

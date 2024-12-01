@@ -213,10 +213,7 @@ const SidebarV2 = (props: SidebarProps) => {
                       summary: string;
                       createdAt: string;
                     }) => (
-                      <div
-                        className="flex items-start justify-start gap-x-2 cursor-pointer"
-                        onClick={(e) => handleChatClick(item?.id, e)}
-                      >
+                      <div className="flex items-start justify-start gap-x-2 cursor-pointer">
                         <div
                           className="max-w-[20px] max-h-[20px] p-1 rounded-md border-2 border-[#6C727580] mt-2 flex items-center justify-center cursor-pointer"
                           onClick={() => handleSelectId(item?.id)}
@@ -225,7 +222,10 @@ const SidebarV2 = (props: SidebarProps) => {
                             <FaCheck size={14} color="#6C727580" />
                           )}
                         </div>
-                        <div className="flex flex-col items-end gap-y-2 ">
+                        <div
+                          className="flex flex-col items-end gap-y-2 cursor-pointer"
+                          onClick={(e) => handleChatClick(item?.id, e)}
+                        >
                           <div className="flex flex-col">
                             <span className="text--[#141718] text-[16px] font-semibold">
                               {/* Brainwave AI UI Kit */}

@@ -1,12 +1,10 @@
 /* eslint-disable import/no-cycle */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { UserPayload } from "@/types";
-
 import { RootState } from "../store";
 
 export interface AuthenticationState {
-  user: UserPayload | null;
+  user: string | null;
   token: string | null;
   refreshToken?: string;
   role: string | null;
@@ -25,9 +23,9 @@ export const AuthSlice = createSlice({
   initialState,
   name: "auths",
   reducers: {
-    setUser: (state, action: PayloadAction<UserPayload>) => {
-      state.user = action.payload;
-    },
+    // setUser: (state, action: PayloadAction) => {
+    //   state.user = action.payload;
+    // },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
     },
@@ -48,7 +46,7 @@ export const AuthSlice = createSlice({
 });
 
 export const {
-  setUser,
+  // setUser,
   setToken,
   reset,
   setRefreshToken,

@@ -6,7 +6,7 @@ import { Store } from "../states/store";
 export const API = axios.create({
   // baseURL: process.env.REACT_APP_DEV,
   // baseURL: "https://newbackendapi.azurewebsites.net/api/",
-  baseURL: "https://api-v2-staging.up.railway.app/api/v1/",
+  baseURL: "",
 });
 
 API.defaults.headers.common.Accept = "application/json";

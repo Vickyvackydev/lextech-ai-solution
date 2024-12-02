@@ -257,7 +257,10 @@ const Sidebar = (props: SidebarProps) => {
                 </span>
               </li>
               <li
-                onClick={() => dispatch(setSearcModal(true))}
+                onClick={() => {
+                  dispatch(setSearcModal(true));
+                  props.setOpen(false);
+                }}
                 className={`flex items-center cursor-pointer rounded-lg p-3    justify-between hover:bg-gradient-to-r hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
               >
                 <div className={`flex items-center  gap-x-5`}>
@@ -522,7 +525,10 @@ const Sidebar = (props: SidebarProps) => {
                 )}
               </li>
               <li
-                onClick={() => dispatch(setSearcModal(true))}
+                onClick={() => {
+                  dispatch(setSearcModal(true));
+                  dispatch(setOpen(false));
+                }}
                 className={`flex items-center cursor-pointer rounded-lg p-3  ${
                   !open && "justify-center"
                 }   justify-between hover:bg-gradient-to-r hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
@@ -818,11 +824,15 @@ const Sidebar = (props: SidebarProps) => {
         maxWidth="w-[723px]"
         edges="rounded-2xl"
       >
-        <div className="border-b py-3 flex items-center justify-start px-7 gap-x-3">
-          <Image src={LARGE_SEARCH} className="w-[48px] h-[48px]" alt="" />
+        <div className="border-b py-3 flex items-center justify-start lg:px-7 px-5 gap-x-3">
+          <Image
+            src={LARGE_SEARCH}
+            className="lg:w-[48px] lg:h-[48px] w-[26px] h-[26px]"
+            alt=""
+          />
           <input
             type="text"
-            className="bg-transparent outline-none pt-3 text-2xl w-full placeholder:text-[#A1A1A1]  placeholder:text-3xl placeholder:font-normal font-normal"
+            className="bg-transparent outline-none lg:pt-3 pt-0 lg:text-2xl text-xl w-full placeholder:text-[#A1A1A1]  lg:placeholder:text-3xl placeholder:text-xl placeholder:font-normal font-normal"
             placeholder="Search ..."
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -834,7 +844,7 @@ const Sidebar = (props: SidebarProps) => {
           </span> */}
         </div>
         <div className=" py-3 px-7">
-          <div className="flex items-center  justify-start gap-x-4">
+          <div className="flex items-start lg:flex-row flex-col lg:items-center  justify-start gap-x-4 gap-y-4">
             {/* <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
               <Image src={SMALL_SEARCH} className="w-[24px] h-[24px]" alt="" />
               <input
@@ -848,7 +858,11 @@ const Sidebar = (props: SidebarProps) => {
                 Start date
               </span>
               <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
-                <Image src={CLOCK} className="w-[24px] h-[24px]" alt="" />
+                <Image
+                  src={CLOCK}
+                  className="lg:w-[24px] lg:h-[24px] w-[16px] h-[16px]"
+                  alt=""
+                />
                 <input
                   type="date"
                   value={startDate || ""}
@@ -864,8 +878,12 @@ const Sidebar = (props: SidebarProps) => {
               <span className="text-sm font-medium text-gray-400">
                 End date
               </span>
-              <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
-                <Image src={CLOCK} className="w-[24px] h-[24px]" alt="" />
+              <div className="flex items-center lg:w-full w-50 gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
+                <Image
+                  src={CLOCK}
+                  className="lg:w-[24px] lg:h-[24px] w-[16px] h-[16px]"
+                  alt=""
+                />
                 <input
                   type="date"
                   value={endDate || ""}
@@ -873,7 +891,7 @@ const Sidebar = (props: SidebarProps) => {
                     setEndDate(e.target.value)
                   }
                   placeholder=""
-                  className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal w-full bg-transparent outline-none"
+                  className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal lg:w-full w-70 bg-transparent outline-none"
                 />
               </div>
             </div>
@@ -889,16 +907,16 @@ const Sidebar = (props: SidebarProps) => {
                     {format(new Date(date), "MMMM EEEE dd")}
                   </span>
                 </div>
-                <div className="flex flex-col gap-y-7 mt-3">
+                <div className="flex flex-col items-start gap-y-7 mt-3">
                   {groupMessages[date].map(
                     (item: {
                       title: string;
                       summary: string;
                       createdAt: string;
                     }) => (
-                      <div className="flex items-center justify-between">
+                      <div className="flex lg:items-center items-end lg:justify-between justify-end lg:flex-row flex-col gap-y-3">
                         <div className="flex flex-col items-start">
-                          <span className="text-[18px] font-semibold text-[#141718]">
+                          <span className="lg:text-[18px] text-sm font-semibold text-[#141718]">
                             {item?.title}
                           </span>
                           <span className="text-[#8E8E93] font-medium text-xs">
@@ -920,8 +938,8 @@ const Sidebar = (props: SidebarProps) => {
             <div className="flex flex-col items-center justify-center gap-y-2">
               <Image
                 src={"/svg/empty-filter.png"}
-                width={300}
-                height={300}
+                width={isMobileView ? 200 : 300}
+                height={isMobileView ? 200 : 300}
                 alt="filter image"
               />
               <span className="text-2xl font-medium text-gray-400">

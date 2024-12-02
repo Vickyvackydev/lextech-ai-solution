@@ -199,7 +199,7 @@ const Sidebar = (props: SidebarProps) => {
       {isMobileView || isTabletView ? (
         <Transition
           as="div"
-          className="fixed z-30 h-full w-56 flex-none bg-brand-light lg:static"
+          className="fixed z-50 h-full w-80 flex-none bg-brand-light lg:static"
           enter="transition-all ease-in duration-300"
           enterFrom="transform -translate-x-full"
           enterTo="transform -translate-x-0"
@@ -209,55 +209,256 @@ const Sidebar = (props: SidebarProps) => {
           show={props.open}
         >
           {/* mobile screen section */}
-          {/* <div className="h-screen">
-            <div className="w-full bg-brand-light h-screen pt-8 relative duration-300">
-              <div
-                className="flex gap-x-4 px-5 pt-2 cursor-pointer"
-                onClick={() => router.push("/dashboard")}
+
+          <div
+            className={` bg-[#141718] h-screen pt-8  duration-300 transition-all`}
+          >
+            <div className="flex gap-x-4 px-7 pt-2">
+              {/* <Image
+                  alt=""
+                  className={`cursor-pointer duration-500 ${
+                    open && "rotate-[360deg]"
+                  } ${open && "scale-0 hidden"}`}
+                  onClick={() => dispatch(props.setOpen(f))}
+                  src={IMAGE_TOGGLER}
+                /> */}
+              <Image
+                alt=""
+                onClick={() => {
+                  dispatch(setChatStarted(false));
+                  dispatch(setOpen(false));
+                }}
+                className={`cursor-pointer duration-500 transition-all `}
+                src={LEXTECH_AI_LOGO}
+              />
+              <Image
+                alt=""
+                className={`cursor-pointer duration-500`}
+                onClick={() => props.setOpen(false)}
+                src={IMAGE_TOGGLER}
+              />
+            </div>
+            <ul className={`pt-6 w-full flex flex-col gap-y-4 px-6`}>
+              <li
+                onClick={() => {
+                  router.push("/");
+                  dispatch(setChatStarted(false));
+                  dispatch(setOpen(false));
+                }}
+                className={`flex items-center rounded-lg  p-3 cursor-pointer  justify-start gap-x-5 hover:bg-gradient-to-r ${
+                  pathname === "/" &&
+                  "bg-gradient-to-r from-[#323337] via-[#323337] to-[rgba(70,_79,_111,_0.3)]"
+                } hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
+              >
+                <Image src={CHAT_ICON} className="w-[24px] h-[24px]" alt="" />
+
+                <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                  Chats
+                </span>
+              </li>
+              <li
+                onClick={() => dispatch(setSearcModal(true))}
+                className={`flex items-center cursor-pointer rounded-lg p-3    justify-between hover:bg-gradient-to-r hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
+              >
+                <div className={`flex items-center  gap-x-5`}>
+                  <Image
+                    src={SEARCH_ICON}
+                    className={`  w-[24px] h-[24px] `}
+                    alt=""
+                  />
+
+                  <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                    Search
+                  </span>
+                </div>
+
+                <Image src={BUTTON} className="w-[38px] h-[20px]" alt="" />
+              </li>
+
+              <li
+                onClick={() => {
+                  router.push("/documents");
+                  dispatch(setOpen(false));
+                }}
+                className={`flex items-center p-3 rounded-lg cursor-pointer ${
+                  pathname === "/documents" &&
+                  "bg-gradient-to-r from-[#323337] via-[#323337] to-[rgba(70,_79,_111,_0.3)]"
+                } justify-start gap-x-5 hover:bg-gradient-to-r hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
               >
                 <Image
+                  src={DOCUMENT_ICON}
+                  className="w-[24px] h-[24px]"
                   alt=""
-                  className="cursor-pointer duration-500 rotate-[360deg]"
-                  src={""}
                 />
-                <h1 className="text-brand font-bold origin-left text-xl duration-200">
-                  Spottr
-                </h1>
+
+                <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                  Documents
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  router.push("/updates");
+                  dispatch(setOpen(false));
+                }}
+                className={`flex items-center p-3 cursor-pointer rounded-lg  ${
+                  pathname === "/updates" &&
+                  "bg-gradient-to-r from-[#323337] via-[#323337] to-[rgba(70,_79,_111,_0.3)]"
+                } justify-start gap-x-5 hover:bg-gradient-to-r hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
+              >
+                <Image src={UPDATE_ICON} className="w-[24px] h-[24px]" alt="" />
+
+                <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                  Updates and FAQs
+                </span>
+              </li>
+              <li
+                onClick={() => setSettings(true)}
+                className={`flex items-center cursor-pointer rounded-lg p-3  justify-start gap-x-5 hover:bg-gradient-to-r hover:from-[#323337] hover:via-[#323337] hover:to-[rgba(70,_79,_111,_0.3)]`}
+              >
+                <Image
+                  src={SETTINGS_ICON}
+                  className="w-[24px] h-[24px]"
+                  alt=""
+                />
+
+                <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                  Settings
+                </span>
+              </li>
+            </ul>
+            <div className="border-t relative cursor-pointer py-5 border-[#232627] px-7 mt-7 h-[220px] max-h-[500px] overflow-y-scroll">
+              <div
+                className={`flex items-center  gap-x-5`}
+                onClick={() => setLists((prev) => !prev)}
+              >
+                <Image
+                  src={ARROW_ICON}
+                  className={`w-[24px] h-[24px]  transition-all duration-200`}
+                  alt=""
+                />
+
+                <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                  Chat list
+                </span>
               </div>
-              <ul className="pt-6">
-                <li
-                  className={`flex flex-row px-5 rounded-md mt-2 p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 ${
-                    addproductModal ? "bg-brand text-white" : "text-gray-600"
-                  }`}
-                  onClick={() => {
-                    setAddProductModal(true);
-                    props.onClose();
-                  }}
-                >
-                  <img alt="" className="w-5 h-5" src="/svg/light-plus.svg" />
-                  <span className="origin-left duration-200">Add Product</span>
-                </li>
-                {Menus.map((Menu) => (
-                  <li
-                    className={`flex flex-row px-5 rounded-md mt-2 p-2 cursor-pointer hover:bg-light-white text-gray-600 text-sm items-center gap-x-4 ${
-                      pathname === Menu?.path
-                        ? "bg-brand text-white"
-                        : "text-gray-600"
-                    }`}
-                    key={Menu.title}
-                    onClick={() => {
-                      router.push(Menu.path);
-                    }}
-                  >
-                    <img alt="" className="w-5 h-5" src={Menu.src} />
-                    <span className="origin-left duration-200">
-                      {Menu.title}
+
+              <Fade direction="down" duration={900}>
+                <ul className={`pt-6  flex flex-col gap-y-6 overflow-auto`}>
+                  <li className="flex pl-2 items-center justify-between gap-x-5">
+                    <div
+                      className={`flex  items-center ${
+                        open && "justify-center"
+                      } justify-start gap-x-5`}
+                    >
+                      <>
+                        <Image
+                          src={GRAY_ICON}
+                          className="w-[14px] h-[14px]"
+                          alt=""
+                        />
+
+                        <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                          Welcome
+                        </span>
+                      </>
+                    </div>
+
+                    <div className="w-[35px] h-[24px] rounded-md flex items-center justify-center bg-[#232627]">
+                      <span className="text-[#6C7275]">48</span>
+                    </div>
+                  </li>
+                  <li className="flex pl-2 items-center justify-between gap-x-5">
+                    <div
+                      className={`flex  items-center $ justify-start gap-x-5`}
+                    >
+                      <>
+                        <Image
+                          src={BLUE_ICON}
+                          className="w-[14px] h-[14px]"
+                          alt=""
+                        />
+
+                        <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                          Favorites
+                        </span>
+                      </>
+                    </div>
+
+                    <div className="w-[35px] h-[24px] rounded-md flex items-center justify-center bg-[#232627]">
+                      <span className="text-[#6C7275]">18</span>
+                    </div>
+                  </li>
+                  <li className="flex pl-2 items-center justify-between gap-x-5">
+                    <div className={`flex  items-centerjustify-start gap-x-5`}>
+                      <>
+                        <Image
+                          src={ORANGE_ICON}
+                          className="w-[14px] h-[14px]"
+                          alt=""
+                        />
+
+                        <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                          Archived
+                        </span>
+                      </>
+                    </div>
+
+                    <div className="w-[35px] h-[24px] rounded-md flex items-center justify-center bg-[#232627]">
+                      <span className="text-[#6C7275]">128</span>
+                    </div>
+                  </li>
+                  <li className={`flex items-center justify-start gap-x-5`}>
+                    <Image
+                      src={ADD_ICON}
+                      className="w-[24px] h-[24px]"
+                      alt=""
+                    />
+
+                    <span className="text-[#E8ECEFBF] text-sm font-semibold">
+                      New list
                     </span>
                   </li>
-                ))}
-              </ul>
+                </ul>
+              </Fade>
+
+              <div className="w-full h-[148px] p-5 gap-y-6 shadow-dropShadow mt-6 flex flex-col items-center justify-center rounded-xl bg-[#FFFFFF01]">
+                <div className="flex items-center justify-between  w-full">
+                  <div className="relative">
+                    <Image
+                      src={MAN}
+                      className="w-[40px] h-[40px] rounded-full"
+                      alt="image"
+                    />
+                    <Image
+                      src={DARK_STATUS}
+                      className="w-[18px] h-[18px] rounded-full absolute -right-1 top-7"
+                      alt="image"
+                    />
+                  </div>
+
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm font-semibold text-[#FEFEFE]">
+                      {session_data?.user?.name}
+                    </span>
+                    <span className="text-[#E8ECEF80] font-semibold text-xs">
+                      {session_data?.user?.email?.length! > 15
+                        ? `${session_data?.user?.email?.slice(0, 15)}...`
+                        : session_data?.user?.email}
+                    </span>
+                  </div>
+                  <span className="bg-[#3FDD78] text-[#141718] font-bold text-xs flex items-center justify-center rounded-lg px-2 py-1">
+                    Free
+                  </span>
+                </div>
+                <ButtonV2
+                  title="Upgrade to pro"
+                  btnStyle="border-2 border-[#343839] rounded-xl w-full py-3"
+                  handleClick={() => {}}
+                  textStyle="text-[#FEFEFE] font-semibold text-sm"
+                />
+              </div>
             </div>
-          </div> */}
+          </div>
         </Transition>
       ) : (
         <div className="flex h-screen">
@@ -642,29 +843,39 @@ const Sidebar = (props: SidebarProps) => {
                 className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal w-full bg-transparent outline-none"
               />
             </div> */}
-            <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
-              <Image src={CLOCK} className="w-[24px] h-[24px]" alt="" />
-              <input
-                type="date"
-                value={startDate || ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setStartDate(e.target.value)
-                }
-                placeholder=""
-                className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal w-full bg-transparent outline-none"
-              />
+            <div className="flex flex-col items-start gap-y-1">
+              <span className="text-sm font-medium text-gray-400">
+                Start date
+              </span>
+              <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
+                <Image src={CLOCK} className="w-[24px] h-[24px]" alt="" />
+                <input
+                  type="date"
+                  value={startDate || ""}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setStartDate(e.target.value)
+                  }
+                  placeholder=""
+                  className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal w-full bg-transparent outline-none"
+                />
+              </div>{" "}
             </div>
-            <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
-              <Image src={CLOCK} className="w-[24px] h-[24px]" alt="" />
-              <input
-                type="date"
-                value={endDate || ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEndDate(e.target.value)
-                }
-                placeholder=""
-                className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal w-full bg-transparent outline-none"
-              />
+            <div className="flex flex-col items-start gap-y-1">
+              <span className="text-sm font-medium text-gray-400">
+                End date
+              </span>
+              <div className="flex items-center gap-x-2 p-3 border border-[#E8ECEF] rounded-3xl">
+                <Image src={CLOCK} className="w-[24px] h-[24px]" alt="" />
+                <input
+                  type="date"
+                  value={endDate || ""}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEndDate(e.target.value)
+                  }
+                  placeholder=""
+                  className="text-[17px] placeholder:text-[17px] placeholder:text-[#8A8A8A] font-normal w-full bg-transparent outline-none"
+                />
+              </div>
             </div>
           </div>
           {Object.keys(groupMessages).length > 0 ? (

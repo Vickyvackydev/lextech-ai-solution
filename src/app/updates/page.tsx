@@ -17,12 +17,12 @@ function Updates() {
   const [selectedFaq, setSelectedFaq] = useState(0);
   return (
     <DashboardLayout>
-      <div className="p-10">
-        <div className="flex flex-col gap-y-1 border-b pb-3">
-          <span className="text-[40px] font-semibold text-black">
+      <div className="lg:p-10 p-5">
+        <div className="flex flex-col gap-y-1 border-b pb-3 lg:pt-0 pt-10">
+          <span className="lg:text-[40px] text-[20px] font-semibold text-black">
             Update and FAQ
           </span>
-          <span className="text-[24px] font-normal text-[#6C7275]">
+          <span className="lg:text-[24px] text-lg font-normal text-[#6C7275]">
             Features, fixes & improvements.
           </span>
           <div className="flex items-center gap-x-1 mt-9 transition-all duration-300">
@@ -50,7 +50,7 @@ function Updates() {
         </div>
         {activeTab === "update" && (
           <div className="flex flex-col gap-y-8 w-full mt-9 h-[600px] max-h-[600px] overflow-y-scroll">
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between lg:flex-row flex-col">
               <div className="flex flex-col gap-y-3">
                 <Image src={ICON_BOX} className="w-[60px] h-[60px]" alt="" />
                 <span className="text-[#141718] font-semibold text-[18px]">
@@ -66,7 +66,7 @@ function Updates() {
                 alt=""
               />
             </div>
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between lg:flex-row flex-col">
               <div className="flex flex-col gap-y-3">
                 <Image src={ICON_BOX} className="w-[60px] h-[60px]" alt="" />
                 <span className="text-[#141718] font-semibold text-[18px]">

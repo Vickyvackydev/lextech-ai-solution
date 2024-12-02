@@ -11,16 +11,18 @@ import React from "react";
 import { Bounce, Fade } from "react-awesome-reveal";
 import { motion } from "framer-motion";
 import ButtonV2 from "@/shared/components/buttonV2";
-import { useAppSelector, useAppDispatch } from "@/hooks";
+import { useAppSelector, useAppDispatch, useMediaQuery } from "@/hooks";
 import {
   SelectOpenState,
   setSelectedInput,
 } from "@/states/slices/globalReducer";
+import Typewriter from "typewriter-effect";
 
 function Onboarding({ username }: { username: string | null | undefined }) {
   const open = useAppSelector(SelectOpenState);
   const dispatch = useAppDispatch();
   const text = "Can I help you with anything?";
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   const letters = text.split("");
 
@@ -55,9 +57,9 @@ function Onboarding({ username }: { username: string | null | undefined }) {
         </div>
       </Bounce>
       <Bounce duration={1000}>
-        <div className="w-full bg-[#E4F4FF] rounded-xl h-[199px] mt-10 p-10 flex flex-col items-start gap-y-7">
-          <motion.div
-            className="overflow-hidden inline-block text-[36px] font-bold text-gray-900"
+        <div className="w-full bg-[#E4F4FF] rounded-xl lg:h-[199px] h-full mt-10 lg:p-10 p-5 flex flex-col items-start lg:gap-y-7 gap-y-3">
+          {/* <motion.div
+            className="overflow-hidden inline-block md:text-[36px] text-sm font-bold text-gray-900"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -71,14 +73,35 @@ function Onboarding({ username }: { username: string | null | undefined }) {
                 {letter === " " ? "\u00A0" : letter}
               </motion.span>
             ))}
-          </motion.div>
-
+          </motion.div> */}
+          <div className="lg:text-[36px] text-[17px] font-semibold">
+            <Typewriter
+              options={{
+                strings: ["Hi Am LexTech Ai."],
+                autoStart: true,
+                loop: false,
+                cursor: "|",
+                delay: 75,
+              }}
+              onInit={(typewriter) => {
+                typewriter
+                  .typeString("Can i help you with anything?.")
+                  .callFunction(() => {
+                    const cursor: any = document.querySelector(
+                      ".Typewriter__cursor"
+                    );
+                    if (cursor) cursor.style.display = "none";
+                  })
+                  .start();
+              }}
+            />
+          </div>
           <ButtonV2
             title={"Take a tour"}
             btnStyle={
-              "bg-[#007AFF] rounded-3xl w-[180px] h-[51px] flex items-center justify-center gap-x-3 flex-row-reverse"
+              "bg-[#007AFF] rounded-3xl lg:w-[180px] w-30 lg:h-[51px] h-full flex items-center justify-center lg:gap-x-3 gap-x-1 lg:p-3 p-2 flex-row-reverse"
             }
-            textStyle={"text-[#FEFEFE]"}
+            textStyle={"text-[#FEFEFE] lg:text-lg text-sm"}
             image={MAP_CONNECTION}
             imageSize="w-[24px] h-[24px]"
             handleClick={function (
@@ -91,8 +114,8 @@ function Onboarding({ username }: { username: string | null | undefined }) {
       </Bounce>
       <Fade direction="down" duration={1000}>
         <div
-          className={`w-full flex items-center ${
-            open && "grid grid-cols-3 gap-y-2"
+          className={`w-full grid md:grid-cols-4 lg:grid-cols-4 sm:grid-cols-1 gap-y-3 items-center lg:mb-0 mb-[100px] ${
+            open && !isMobile ? "  grid-cols-3 gap-y-2" : ""
           }   gap-x-2 mt-8 `}
         >
           <div

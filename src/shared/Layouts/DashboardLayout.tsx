@@ -12,6 +12,7 @@ import Sidebar from "@/shared/components/Sidebar";
 import { useSelector } from "react-redux";
 import { globalLoading } from "@/states/slices/authReducer";
 import SidebarV2 from "../components/Sidebar/sidebarV2";
+import { FaBars, FaEllipsisV } from "react-icons/fa";
 // import { Session } from "next-auth";
 
 export default function DashboardLayout({
@@ -41,6 +42,21 @@ export default function DashboardLayout({
           onClick={() => setSideNavVisible(false)}
         />
       ) : null}
+
+      {isMobileView && (
+        <div className="w-full bg-white shadow-md flex items-center justify-between p-5 absolute z-30">
+          <div className="flex items-center gap-x-2">
+            <div
+              className="flex items-center justify-center rounded-full w-[40px] h-[40px] bg-[#fbfcfe]"
+              onClick={() => setSideNavVisible(true)}
+            >
+              <FaBars />
+            </div>
+            <span>LexTech Ai.0</span>
+          </div>
+          <FaEllipsisV />
+        </div>
+      )}
       <Sidebar
         {...{
           open: isSideNavVisible,
@@ -49,7 +65,7 @@ export default function DashboardLayout({
         }}
       />
 
-      <div className="[@media(max-width:767px)]:scrollbar-hide h-screen overflow-auto bg-[#fbfcfe] lg:pb-20 w-[2000px]">
+      <div className="[@media(max-width:767px)]:scrollbar-hide h-screen overflow-auto bg-[#fbfcfe] lg:pb-20 lg:w-[2100px] md:w-full sm:w-full lg:mt-0 mt-10">
         {children}
       </div>
       {/* <Sidebar

@@ -18,7 +18,7 @@ import { useScrollToBottom } from "@/components/custom/use-scroll-to-bottom";
 import { MultimodalInput } from "./multimodal-input";
 import { Overview } from "./overview";
 import { getChatById, shareChat } from "@/lib/actions/chat";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector, useMediaQuery } from "@/hooks";
 import toast from "react-hot-toast";
 import { selectInput, setSearcModal } from "@/states/slices/globalReducer";
 import Image from "next/image";
@@ -163,6 +163,7 @@ export function Chat({
   //     uploaded_files: [],
   //   },
   // ]);
+  const isMobile = useMediaQuery("(max-width: 640px)");
   const open = useAppSelector(SelectOpenState);
   const selectedText = useAppSelector(selectInput);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
@@ -433,17 +434,17 @@ export function Chat({
     //   </div>
     // </div>
 
-    <div className="w-full pt-8 px-16">
+    <div className="w-full pt-8 lg:px-16 px-7">
       {isFirstNewChat ? (
         <Onboarding username={session?.user?.name} />
       ) : (
         <div
           ref={chatContainerRef}
-          className="border-t pt-7 h-[500px] max-h-[500px] pb-16 overflow-y-auto"
+          className="border-t lg:pt-7 pt-16 lg:h-[500px] lg:max-h-[500px] h-[600px] max-h-[600px] pb-16 overflow-y-auto"
         >
           <div className="flex items-center justify-between">
             <span className="text-[18px] font-semibold text-black">
-              {selectedModelName ?? "Case Law Analysis"}
+              {"LexTech Ai.0"}
             </span>
             <div className="flex items-center gap-x-4">
               <Image
@@ -482,15 +483,15 @@ export function Chat({
                       ))}
                   </div>
 
-                  <div className="px-4 py-5 border border-[#E8ECEF] rounded-xl h-full w-fit text-wrap">
-                    <span className="text-[18px] font-semibold text-[#6E6E6E] ">
+                  <div className="px-4 lg:py-5 py-3 border border-[#E8ECEF] rounded-xl h-full w-fit text-wrap">
+                    <span className="lg:text-[18px] text-sm font-semibold text-[#6E6E6E] ">
                       {/* Write Detailed case for a simple welcome criminal suit and
                  form with 3 input fields and a dropdown with 2 buttons, cancel
                  and send, then run test with multiple parties. */}
                       {mess.content}
                     </span>
                   </div>
-                  <span className="text-sm font-medium text-[#C9C9C9]">
+                  <span className="lg:text-sm text-xs font-medium text-[#C9C9C9]">
                     {
                       // @ts-ignore
                       formatChatTime(mess?.createdAt)
@@ -499,14 +500,14 @@ export function Chat({
                 </div>
               ) : (
                 <div className="w-full relative gap-y-2">
-                  <div className="px-4 py-5 bg-[#F3F5F7] rounded-xl h-full">
-                    <span className="text-[18px] font-semibold text-[#6E6E6E]">
+                  <div className="px-4 lg:py-5 py-3 bg-[#F3F5F7] rounded-xl h-full">
+                    <span className="lg:text-[18px] text-sm font-semibold text-[#6E6E6E]">
                       {mess.content}
                     </span>
                   </div>
                   <Image
                     src={AI_PHOTO}
-                    className="w-[30px] h-[30px] absolute right-9 -bottom-4"
+                    className="lg:w-[30px] lg:h-[30px] w-[25px] h-[25px] absolute right-9 -bottom-4"
                     alt=""
                   />
                 </div>
@@ -515,9 +516,9 @@ export function Chat({
           ))}
           {isThinking && (
             <div className="w-full relative gap-y-2 mt-5">
-              <div className="px-4 py-7 bg-[#F3F5F7] rounded-xl h-full">
+              <div className="px-4 lg:py-7 py-3 bg-[#F3F5F7] rounded-xl h-full">
                 <span className="text-[18px] font-semibold text-[#6E6E6E]">
-                  <PulseLoader size={11} color="#5E5E5E" />
+                  <PulseLoader size={isMobile ? 8 : 11} color="#5E5E5E" />
                 </span>
               </div>
               <Image
@@ -530,83 +531,157 @@ export function Chat({
           <div ref={messagesEndRef} />
         </div>
       )}
-
-      <Fade
-        direction="up"
-        duration={2000}
-        className={`fixed bottom-0  ${
-          open ? "w-[670px]" : "w-[840px]"
-        } px-10 bg-white pb-8 rounded-lg`}
-      >
-        <div className="flex items-center gap-x-2">
-          {uploadQueue.length > 0 &&
-            uploadQueue?.map((file: any, index: number) => (
-              <Image
-                key={index}
-                src={file?.url}
-                width={100}
-                height={100}
-                className="w-[50px] h-[50px] object-contain rounded-lg"
-                alt={file?.name}
-              />
-            ))}
-        </div>
-        <div className="w-full relative border-2 py-2 overflow-hidden border-[#E8ECEF] rounded-2xl flex flex-col items-center h-auto mt-16 px-3">
-          <textarea
-            name=""
-            placeholder="Type a message..."
-            rows={1}
-            onKeyDown={handleEnterMessage}
-            value={input}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setInput(e.target.value)
-            }
-            onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              e.target.style.height = "auto";
-              e.target.style.height = `${e.target.scrollHeight}px`;
-            }}
-            className="w-full resize-none outline-none bg-transparent px-3 py-1"
-          />
-
-          <div className="w-full flex items-center justify-between">
-            <button
-              // @ts-ignore
-              onClick={() => document.querySelector(".file_upload")?.click()}
-            >
-              <Image
-                src={ADD_ICON}
-                className="w-[28px] h-[28px] "
-                alt="Add Icon"
-              />
-            </button>
-            <input
-              type="file"
-              accept=""
-              multiple
-              onChange={handleFileChange}
-              className="file_upload sr-only"
-            />
-            {isLoading ? (
-              <div
-                onClick={() => stop()}
-                className="border cursor-pointer border-gray-300 rounded-md flex items-center justify-center"
-              >
-                <StopIcon size={17} />
-              </div>
-            ) : (
-              <button type="button" onClick={handleSubmit}>
+      {isMobile ? (
+        <div className="fixed bottom-0 px-6 pb-10 bg-white w-full h-[150px] left-0">
+          <div className="flex items-center gap-x-2">
+            {uploadQueue.length > 0 &&
+              uploadQueue?.map((file: any, index: number) => (
                 <Image
-                  src={SENDER}
-                  className={`w-[35px] h-[35px] ${
-                    !input.trim() && "opacity-50"
-                  }`}
-                  alt="Sender Icon"
+                  key={index}
+                  src={file?.url}
+                  width={100}
+                  height={100}
+                  className="w-[50px] h-[50px] object-contain rounded-lg"
+                  alt={file?.name}
+                />
+              ))}
+          </div>
+
+          <div className="w-full relative border-2 py-2 overflow-hidden border-[#E8ECEF] rounded-2xl flex flex-col items-center h-auto mt-9 px-3">
+            <textarea
+              name=""
+              placeholder="Type a message..."
+              rows={1}
+              onKeyDown={handleEnterMessage}
+              value={input}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setInput(e.target.value)
+              }
+              onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+              className="w-full resize-none outline-none bg-transparent px-3 py-1"
+            />
+
+            <div className="w-full flex items-center justify-between">
+              <button
+                // @ts-ignore
+                onClick={() => document.querySelector(".file_upload")?.click()}
+              >
+                <Image
+                  src={ADD_ICON}
+                  className="lg:w-[28px] lg:h-[28px] w-[25px] h-[25px]"
+                  alt="Add Icon"
                 />
               </button>
-            )}
+              <input
+                type="file"
+                accept=""
+                multiple
+                onChange={handleFileChange}
+                className="file_upload sr-only"
+              />
+              {isLoading ? (
+                <div
+                  onClick={() => stop()}
+                  className="border cursor-pointer border-gray-300 rounded-md flex items-center justify-center"
+                >
+                  <StopIcon size={17} />
+                </div>
+              ) : (
+                <button type="button" onClick={handleSubmit}>
+                  <Image
+                    src={SENDER}
+                    className={`lg:w-[35px] lg:h-[35px] w-[25px] h-[25px] ${
+                      !input.trim() && "opacity-50"
+                    }`}
+                    alt="Sender Icon"
+                  />
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </Fade>
+      ) : (
+        <Fade
+          direction="up"
+          duration={2000}
+          className={`fixed bottom-0  ${
+            open ? "w-[670px]" : "w-[850px]"
+          }   px-10 bg-white pb-8 rounded-lg`}
+        >
+          <div className="flex items-center gap-x-2">
+            {uploadQueue.length > 0 &&
+              uploadQueue?.map((file: any, index: number) => (
+                <Image
+                  key={index}
+                  src={file?.url}
+                  width={100}
+                  height={100}
+                  className="w-[50px] h-[50px] object-contain rounded-lg"
+                  alt={file?.name}
+                />
+              ))}
+          </div>
+
+          <div className="w-full relative border-2 py-2 overflow-hidden border-[#E8ECEF] rounded-2xl flex flex-col items-center h-auto mt-16 px-3">
+            <textarea
+              name=""
+              placeholder="Type a message..."
+              rows={1}
+              onKeyDown={handleEnterMessage}
+              value={input}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setInput(e.target.value)
+              }
+              onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+              className="w-full resize-none outline-none bg-transparent px-3 py-1"
+            />
+
+            <div className="w-full flex items-center justify-between">
+              <button
+                // @ts-ignore
+                onClick={() => document.querySelector(".file_upload")?.click()}
+              >
+                <Image
+                  src={ADD_ICON}
+                  className="w-[28px] h-[28px] "
+                  alt="Add Icon"
+                />
+              </button>
+              <input
+                type="file"
+                accept=""
+                multiple
+                onChange={handleFileChange}
+                className="file_upload sr-only"
+              />
+              {isLoading ? (
+                <div
+                  onClick={() => stop()}
+                  className="border cursor-pointer border-gray-300 rounded-md flex items-center justify-center"
+                >
+                  <StopIcon size={17} />
+                </div>
+              ) : (
+                <button type="button" onClick={handleSubmit}>
+                  <Image
+                    src={SENDER}
+                    className={`w-[35px] h-[35px] ${
+                      !input.trim() && "opacity-50"
+                    }`}
+                    alt="Sender Icon"
+                  />
+                </button>
+              )}
+            </div>
+          </div>
+        </Fade>
+      )}
 
       {/* <Fade
         direction="up"

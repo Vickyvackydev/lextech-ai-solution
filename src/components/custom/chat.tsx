@@ -4,7 +4,14 @@
 
 import { Attachment, Message } from "ai";
 import { useChat } from "ai/react";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  ChangeEvent,
+} from "react";
 import { cn } from "@/lib/utils";
 // import { useSidebar } from "@/components/ui/sidebar";
 // import { useHistorySidebar } from "@/contexts/history-sidebar-context";
@@ -176,17 +183,18 @@ export function Chat({
   const chat_id = pathname.split("/").pop();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
   // const chatStarted = useAppSelector(startChat);
   // const open = useAppSelector(SelectOpenState);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // const modalIsOpen = useAppSelector(openModal);
   const text = "Can I help you with anything?";
-
   const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("chatId", chatId!);
+    formData.append("chatId", currentChatId);
 
     try {
       const response = await fetch("/api/upload-pdf", {
@@ -205,84 +213,20 @@ export function Chat({
         };
       } else {
         const { error } = await response.json();
-        throw new Error(`Upload failed: ${error}`);
+        toast.error(error.error || "Upload failed");
+        throw new Error(`Upload failed: ${error.error}`);
       }
     } catch (error) {
       console.error("Error uploading file:", error);
+      toast.error("Network error or upload failed");
       throw error;
     }
   };
 
-  // const handleFileChange = useCallback(
-  //   async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const files = Array.from(event.target.files || []);
-
-  //     setUploadQueue(files.map((file) => file.name));
-
-  //     try {
-  //       const uploadPromises = files.map((file) => uploadFile(file));
-  //       const uploadedAttachments = await Promise.all(uploadPromises);
-  //       const successfullyUploadedAttachments = uploadedAttachments.filter(
-  //         (attachment) => attachment !== undefined
-  //       );
-
-  //       setAttachments((currentAttachments) => [
-  //         ...currentAttachments,
-  //         ...successfullyUploadedAttachments,
-  //       ]);
-  //     } catch (error) {
-  //       console.error("Error uploading files!", error);
-  //     } finally {
-  //       setUploadQueue([]);
-  //     }
-  //   },
-  //   [setAttachments]
-  // );
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-
-  //   if (files && files.length > 3) {
-  //     toast.error("you can only upload maximum of 3 files");
-  //   }
-  //   if (files) {
-  //     const selectedFiles = Array.from(files).slice(0, 3); // selects up to 3 images
-  //     const validFiles = selectedFiles.filter((file) => file.size <= 1000000); // filter image larger than 3mb
-
-  //     const uploadedFiles = validFiles.map((file) => ({
-  //       ...file,
-  //       preview: URL.createObjectURL(file),
-  //     }));
-  //     setSelectedFiles(uploadedFiles);
-  //   }
-  // };
-
-  // const letters = text.split("");
-
-  // const containerVariants = {
-  //   hidden: { opacity: 0 },
-  //   visible: {
-  //     opacity: 1,
-  //     transition: {
-  //       staggerChildren: 0.05,
-  //     },
-  //   },
-  // };
-
-  // const letterVariants = {
-  //   hidden: { opacity: 0, y: 20 },
-  //   visible: { opacity: 1, y: 0 },
-  // };
-
   const handleFileChange = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
+    async (event: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(event.target.files || []);
-
-      const fileQueue = files.map((file) => ({
-        name: file.name,
-        url: URL.createObjectURL(file),
-      }));
-
-      setUploadQueue((prevQueue: any) => [...prevQueue, ...fileQueue]);
+      setUploadQueue(files.map((file) => file.name));
 
       try {
         const uploadPromises = files.map((file) => uploadFile(file));
@@ -296,14 +240,18 @@ export function Chat({
           ...successfullyUploadedAttachments,
         ]);
       } catch (error) {
-        console.error("Error uploading files!", error);
+        console.error("Comprehensive upload error:", error);
+        toast.error("Failed to upload files");
       } finally {
         setUploadQueue([]);
+        // Reset the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     },
     [setAttachments]
   );
-
   const handleControlKeyDown = (event: KeyboardEvent) => {
     if (event.ctrlKey && event.key === "f") {
       event.preventDefault();
@@ -578,7 +526,7 @@ export function Chat({
         >
           <div className="flex items-center justify-between">
             <span className="text-[18px] font-semibold text-black">
-              {"LexTech Ai.0"}
+              {"LexTech AI.0"}
             </span>
             <div className="flex items-center gap-x-4">
               <Image
@@ -746,7 +694,7 @@ export function Chat({
           }   px-10 bg-white pb-8 rounded-lg`}
         >
           <div className="flex items-center gap-x-2">
-            {uploadQueue.length > 0 &&
+            {attachments.length > 0 &&
               uploadQueue?.map((file: any, index: number) => (
                 <Image
                   key={index}
@@ -779,7 +727,10 @@ export function Chat({
             <div className="w-full flex items-center justify-between">
               <button
                 // @ts-ignore
-                onClick={() => document.querySelector(".file_upload")?.click()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }}
               >
                 <Image
                   src={ADD_ICON}
@@ -790,9 +741,10 @@ export function Chat({
               <input
                 type="file"
                 accept=""
+                ref={fileInputRef}
                 multiple
                 onChange={handleFileChange}
-                className="file_upload sr-only"
+                className="sr-only"
               />
               {isLoading ? (
                 <div

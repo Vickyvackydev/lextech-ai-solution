@@ -77,7 +77,7 @@ function Onboarding({ username }: { username: string | null | undefined }) {
           <div className="lg:text-[36px] text-[17px] font-semibold">
             <Typewriter
               options={{
-                strings: ["Hi Am LexTech Ai."],
+                strings: ["Hi Am LexTech AI."],
                 autoStart: true,
                 loop: false,
                 cursor: "|",

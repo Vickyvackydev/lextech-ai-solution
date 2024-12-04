@@ -6,7 +6,7 @@ import { Store } from "../states/store";
 export const API = axios.create({
   // baseURL: process.env.REACT_APP_DEV,
   // baseURL: "https://newbackendapi.azurewebsites.net/api/",
-  baseURL: "",
+  baseURL: "http://ai-api.anambrabpp.com/api/",
 });
 
 API.defaults.headers.common.Accept = "application/json";
@@ -31,7 +31,7 @@ API.interceptors.response.use(
     if (error.response?.status === 401) {
       // Store.dispatch(reset()); // Clear token using Redux action
       // restore initial auth state
-      // window.location.href = "/login";
+      window.location.href = "/sign-in";
     }
     throw error;
   }

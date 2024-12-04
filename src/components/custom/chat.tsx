@@ -4,7 +4,7 @@
 
 import { Attachment, Message } from "ai";
 import { useChat } from "ai/react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 // import { useSidebar } from "@/components/ui/sidebar";
 // import { useHistorySidebar } from "@/contexts/history-sidebar-context";
@@ -34,7 +34,10 @@ import { Bounce, Fade } from "react-awesome-reveal";
 import Onboarding from "./onboarding";
 import { useSession } from "next-auth/react";
 import { PulseLoader } from "react-spinners";
-import { formatChatTime } from "@/utils-func/functions";
+import {
+  formatChatTime,
+  formatResponseToParagraphs,
+} from "@/utils-func/functions";
 import { StopIcon } from "./icons";
 
 interface CustomResponse extends Response {
@@ -360,6 +363,137 @@ export function Chat({
     window.open(shareUrl, "_blank");
   };
 
+  const semanticColors = {
+    title: "text-blue-700 dark:text-blue-400 font-semibold text-xl",
+    subtitle: "text-purple-700 dark:text-purple-400 font-medium text-lg",
+    caseTitle: "text-blue-700 dark:text-blue-400 font-semibold",
+    legalPrinciple: "text-emerald-700 dark:text-emerald-400",
+    citation: "text-purple-700 dark:text-purple-400 italic",
+    conclusion: "text-rose-700 dark:text-rose-400 font-medium",
+    warning: "text-amber-700 dark:text-amber-400",
+    emphasis: "text-indigo-700 dark:text-indigo-400",
+    procedural: "text-cyan-700 dark:text-cyan-400",
+    evidence: "text-teal-700 dark:text-teal-400",
+    statute: "text-violet-700 dark:text-violet-400",
+    default: "text-gray-900 dark:text-gray-100",
+  };
+
+  const legalPatterns = [
+    {
+      regex: /^#\s+(.+?)$/gm,
+      className: semanticColors.title,
+      removeMarker: true,
+    },
+    {
+      regex: /^#{2,}\s+(.+?)$/gm,
+      className: semanticColors.subtitle,
+      removeMarker: true,
+    },
+    {
+      regex:
+        /(?:^|\n)(?:CASE:|IN THE MATTER OF:|SUIT NO:|APPEAL NO:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.caseTitle,
+    },
+    {
+      regex:
+        /(?:^|\n)(?:PRINCIPLE:|LEGAL PRINCIPLE:|RATIO:|RATIO DECIDENDI:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.legalPrinciple,
+    },
+    {
+      regex: /\[([^\]]+)\]|\(([^\)]+)\)/g, // Citations in square brackets or parentheses
+      className: semanticColors.citation,
+    },
+    {
+      regex:
+        /(?:^|\n)(?:CONCLUSION:|JUDGMENT:|HOLDING:|ORDER:|DECISION:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.conclusion,
+    },
+    {
+      regex:
+        /(?:^|\n)(?:WARNING:|IMPORTANT:|NOTE:|CAVEAT:|DISCLAIMER:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.warning,
+    },
+    {
+      regex: /(?:^|\n)(?:PROCEDURE:|PROCEEDINGS:|TIMELINE:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.procedural,
+    },
+    {
+      regex: /(?:^|\n)(?:EVIDENCE:|EXHIBITS:|PROOF:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.evidence,
+    },
+    {
+      regex: /(?:^|\n)(?:STATUTE:|SECTION:|LAW:|ACT:)(.+?)(?:\n|$)/gi,
+      className: semanticColors.statute,
+    },
+    {
+      regex: /\*\*(.+?)\*\*/g, // Text between double asterisks
+      className: semanticColors.emphasis,
+    },
+  ];
+
+  const colorizeText = (text: string) => {
+    if (!text) return null;
+
+    // Split text into lines while preserving empty lines
+    const lines = text.split(/\n/);
+    const processedLines = lines.map((line, index) => {
+      if (!line.trim()) {
+        return <div key={index} className="h-4" />; // Empty line spacing
+      }
+
+      let processedLine = line;
+      let hasMatch = false;
+      let className = semanticColors.default;
+
+      // Apply patterns in order of specificity
+      for (const {
+        regex,
+        className: patternClass,
+        removeMarker,
+      } of legalPatterns) {
+        const matches = Array.from(line.matchAll(new RegExp(regex)));
+        if (matches.length > 0) {
+          hasMatch = true;
+          matches.forEach((match) => {
+            const content = match[1] || match[0];
+            // Remove the markdown markers if removeMarker is true
+            processedLine = removeMarker
+              ? content
+              : processedLine.replace(
+                  match[0],
+                  `<span class="${patternClass}">${content}</span>`
+                );
+          });
+          className = patternClass;
+        }
+      }
+
+      // Handle markdown-style formatting within colored text
+      processedLine = processedLine
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/`(.*?)`/g, "<code>$1</code>")
+        .replace(/~~(.*?)~~/g, "<del>$1</del>");
+
+      return (
+        <div
+          key={index}
+          className={`${hasMatch ? "" : className} leading-relaxed py-1`}
+          dangerouslySetInnerHTML={{ __html: processedLine }}
+        />
+      );
+    });
+
+    return <div className="space-y-1">{processedLines}</div>;
+  };
+
+  // const colorizedContent = useMemo(() => {
+  //   if (typeof content === 'string' && role === 'assistant') {
+  //     return colorizeText(content);
+  //   }
+  //   return content;
+  // }, [content, role]);
+
   return (
     // <div
     //   className="fixed inset-0 flex flex-col bg-background"
@@ -484,7 +618,7 @@ export function Chat({
                   </div>
 
                   <div className="px-4 lg:py-5 py-3 border border-[#E8ECEF] rounded-xl h-full w-fit text-wrap">
-                    <span className="lg:text-[18px] text-sm font-semibold text-[#6E6E6E] ">
+                    <span className="lg:text-[18px] text-sm font-semibold text-[#6E6E6E] leading-relaxed">
                       {/* Write Detailed case for a simple welcome criminal suit and
                  form with 3 input fields and a dropdown with 2 buttons, cancel
                  and send, then run test with multiple parties. */}
@@ -502,7 +636,7 @@ export function Chat({
                 <div className="w-full relative gap-y-2">
                   <div className="px-4 lg:py-5 py-3 bg-[#F3F5F7] rounded-xl h-full">
                     <span className="lg:text-[18px] text-sm font-semibold text-[#6E6E6E]">
-                      {mess.content}
+                      {colorizeText(mess.content)}
                     </span>
                   </div>
                   <Image

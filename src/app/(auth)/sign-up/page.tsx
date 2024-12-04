@@ -6,7 +6,7 @@ import ButtonV2 from "@/shared/components/buttonV2";
 import { LOGO_V2 } from "@/utils-func/image_exports";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import React, { FormEvent, useState, useTransition } from "react";
 import { Bounce, Fade } from "react-awesome-reveal";
 import toast from "react-hot-toast";
 import { FaEye, FaCheck, FaEyeSlash } from "react-icons/fa";
@@ -16,12 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "@/app/api/auth/[...nextauth]/auth";
 import { RegisterForm } from "@/components/Auth/register-form";
 import { Session } from "next-auth";
+import { RegisterApi } from "@/services/auth/auth.service";
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
 
 function Signup() {
   const [isChecked, setIsChecked] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { register, handleSubmit, setValue, watch } = useForm<
@@ -55,6 +57,7 @@ function Signup() {
 
     setValue(name as keyof RegisterFormValues, value, { shouldValidate: true });
   };
+
   const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
     startTransition(() => {
       Register(data).then((data) => {
@@ -77,6 +80,40 @@ function Signup() {
     });
   };
 
+  // const handleRegister = async (e: FormEvent) => {
+  //   e.preventDefault();
+
+  //   setLoading(true);
+  //   const payload = {
+  //     first_name: formData.firstName,
+  //     last_name: formData.lastName,
+  //     email: formData.email,
+  //     password: formData.password,
+  //     password_confirmation: formData.confirmPassword,
+  //   };
+  //   try {
+  //     const response = await RegisterApi(payload);
+  //     if (response) {
+  //       toast.success(response?.message, {
+  //         duration: 10000,
+  //       });
+
+  //       router.replace("/sign-in");
+  //       setFormData({
+  //         firstName: "",
+  //         lastName: "",
+  //         email: "",
+  //         password: "",
+  //         confirmPassword: "",
+  //       });
+  //       setIsChecked(false);
+  //     }
+  //   } catch (error: any) {
+  //     toast.error(error?.response?.data?.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   return (
     <div className="flex items-start w-full">
       <div className="w-full flex flex-col items-center justify-center p-10 h-[700px] max-h-[700px] overflow-y-scroll">
@@ -129,24 +166,24 @@ function Signup() {
                 <span>Password</span>
                 <div className="flex justify-between items-center w-full rounded-lg border  border-[#D9D9D9] p-3">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword1 ? "text" : "password"}
                     {...register("password")}
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="........."
                     className="text-sm placeholder:text-sm placeholder:font-medium font-medium placeholder:text-[#D9D9D9] w-full outline-none"
                   />
-                  {showPassword ? (
+                  {showPassword1 ? (
                     <FaEyeSlash
                       size={15}
                       className="text-gray-300 cursor-pointer"
-                      onClick={() => setShowPassword(false)}
+                      onClick={() => setShowPassword1(false)}
                     />
                   ) : (
                     <FaEye
                       size={15}
                       className="text-gray-300 cursor-pointer"
-                      onClick={() => setShowPassword(true)}
+                      onClick={() => setShowPassword1(true)}
                     />
                   )}
                 </div>
@@ -155,24 +192,24 @@ function Signup() {
                 <span>Confirm Password</span>
                 <div className="flex justify-between items-center w-full rounded-lg border  border-[#D9D9D9] p-3">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword2 ? "text" : "password"}
                     {...register("confirmPassword")}
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="........."
                     className="text-sm placeholder:text-sm placeholder:font-medium font-medium placeholder:text-[#D9D9D9] w-full outline-none"
                   />
-                  {showPassword ? (
+                  {showPassword2 ? (
                     <FaEyeSlash
                       size={15}
                       className="text-gray-300 cursor-pointer"
-                      onClick={() => setShowPassword(false)}
+                      onClick={() => setShowPassword2(false)}
                     />
                   ) : (
                     <FaEye
                       size={15}
                       className="text-gray-300 cursor-pointer"
-                      onClick={() => setShowPassword(true)}
+                      onClick={() => setShowPassword2(true)}
                     />
                   )}
                 </div>
@@ -182,7 +219,7 @@ function Signup() {
                   className="flex items-center border border-black justify-center w-[12px] h-[12px] rounded cursor-pointer"
                   onClick={() => setIsChecked((prev) => !prev)}
                 >
-                  {isChecked && <FaCheck size={10} color="#000000" />}
+                  {isChecked && <FaCheck size={7} color="#000000" />}
                 </div>
                 <span className="text-xs font-medium text-black">
                   I agree to the terms & policy

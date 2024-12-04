@@ -102,7 +102,7 @@ function SignIn() {
                 {...register("email")}
                 onChange={handleInputChange}
                 placeholder="Enter your email"
-                className="text-xs placeholder:text-sm placeholder:font-medium font-medium placeholder:text-[#D9D9D9] w-full rounded-lg border border-[#D9D9D9] p-3 outline-none"
+                className="text-sm placeholder:text-sm placeholder:font-medium font-medium placeholder:text-[#D9D9D9] w-full rounded-lg border border-[#D9D9D9] p-3 outline-none"
               />
             </div>
             <div className="flex items-start gap-y-1 flex-col">
@@ -113,7 +113,7 @@ function SignIn() {
                   {...register("password")}
                   onChange={handleInputChange}
                   placeholder="........."
-                  className="text-xs placeholder:text-sm placeholder:font-medium font-medium placeholder:text-[#D9D9D9] w-full outline-none"
+                  className="text-sm placeholder:text-sm placeholder:font-medium font-medium placeholder:text-[#D9D9D9] w-full outline-none"
                 />
                 {showPassword ? (
                   <FaEyeSlash

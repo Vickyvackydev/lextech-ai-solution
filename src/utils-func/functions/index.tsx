@@ -95,3 +95,10 @@ export function formatHeaderDate(dateString: string): string {
     return format(date, "MMMM");
   }
 }
+
+export const formatResponseToParagraphs = (response: string): string[] => {
+  return response
+    .split(/(?:###|\n\n)/)
+    .map((paragraph) => paragraph.replace(/-|\*\*/g, "").trim())
+    .filter((paragraph) => paragraph); // Remove empty paragraphs
+};

@@ -85,7 +85,7 @@ function Onboarding({ username }: { username: string | null | undefined }) {
               }}
               onInit={(typewriter) => {
                 typewriter
-                  .typeString("Can i help you with anything?.")
+                  .typeString("Can I help you with anything?")
                   .callFunction(() => {
                     const cursor: any = document.querySelector(
                       ".Typewriter__cursor"

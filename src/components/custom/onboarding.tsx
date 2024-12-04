@@ -19,6 +19,7 @@ import {
 } from "@/states/slices/globalReducer";
 import Typewriter from "typewriter-effect";
 import { useChat } from "ai/react";
+import { useRouter } from "next/navigation";
 
 interface CustomResponse extends Response {
   headers: Headers & {
@@ -33,6 +34,7 @@ function Onboarding({
   chatId,
   isNewChat,
   initialMessages,
+  append,
 }: {
   username: string | null | undefined;
   selectedModelName: string;
@@ -40,7 +42,9 @@ function Onboarding({
   chatId: string;
   isNewChat: boolean;
   initialMessages: any;
+  append: any;
 }) {
+  const router = useRouter();
   const open = useAppSelector(SelectOpenState);
   const dispatch = useAppDispatch();
   const text = "Can I help you with anything?";
@@ -63,24 +67,6 @@ function Onboarding({
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-
-  const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
-    useChat({
-      //api: 'api/chat',
-      body: {
-        id: chatId,
-        model: selectedModelName,
-        isNewChat,
-      },
-      initialMessages,
-      onResponse: (response: CustomResponse) => {
-        const newChatId = response.headers.get("X-Chat-Id");
-        if (newChatId && isNewChat) {
-          setChatId(newChatId);
-          window.history.replaceState({}, "", `/chat/${newChatId}`);
-        }
-      },
-    });
 
   return (
     <div className="overflow-y-auto w-full pt-8  pb-[150px]">

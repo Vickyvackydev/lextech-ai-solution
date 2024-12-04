@@ -524,6 +524,7 @@ export function Chat({
           selectedModelName={"LexTech AI.0"}
           setChatId={setChatId}
           chatId={chatId!}
+          append={append}
           initialMessages={initialMessages}
         />
       ) : (

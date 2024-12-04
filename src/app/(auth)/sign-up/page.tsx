@@ -74,8 +74,9 @@ function Signup() {
           password: "",
           confirmPassword: "",
         });
+        setIsChecked(false);
 
-        //router.push("/sign-in")
+        router.push("/sign-in");
       });
     });
   };

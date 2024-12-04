@@ -633,24 +633,24 @@ export function Chat({
                   </span>
                 </div>
               ) : (
-                <div className="w-full relative gap-y-2">
-                  <div className="px-4 lg:py-5 py-3 bg-[#F3F5F7] rounded-xl h-full">
+                <div className="w-full relative gap-y-2 flex items-start gap-x-2">
+                  <Image
+                    src={AI_PHOTO}
+                    className="lg:w-[30px] lg:h-[30px] w-[25px] h-[25px] "
+                    alt=""
+                  />
+                  <div className="px-4 rounded-xl h-full">
                     <span className="lg:text-[18px] text-sm font-semibold text-[#6E6E6E]">
                       {colorizeText(mess.content)}
                     </span>
                   </div>
-                  <Image
-                    src={AI_PHOTO}
-                    className="lg:w-[30px] lg:h-[30px] w-[25px] h-[25px] absolute right-9 -bottom-4"
-                    alt=""
-                  />
                 </div>
               )}
             </div>
           ))}
           {isThinking && (
             <div className="w-full relative gap-y-2 mt-5">
-              <div className="px-4 lg:py-7 py-3 bg-[#F3F5F7] rounded-xl h-full">
+              <div className="px-4 lg:py-7 py-3 rounded-xl h-full">
                 <span className="text-[18px] font-semibold text-[#6E6E6E]">
                   <PulseLoader size={isMobile ? 8 : 11} color="#5E5E5E" />
                 </span>

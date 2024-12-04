@@ -194,7 +194,7 @@ export function Chat({
   const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("chatId", currentChatId);
+    formData.append("chatId", currentChatId!);
 
     try {
       const response = await fetch("/api/upload-pdf", {
@@ -613,7 +613,7 @@ export function Chat({
         <div className="fixed bottom-0 px-6 pb-10 bg-white w-full h-[150px] left-0">
           <div className="flex items-center gap-x-2">
             {uploadQueue.length > 0 &&
-              uploadQueue?.map((file: any, index: number) => (
+              attachments?.map((file: any, index: number) => (
                 <Image
                   key={index}
                   src={file?.url}

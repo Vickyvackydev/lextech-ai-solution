@@ -29,19 +29,9 @@ interface CustomResponse extends Response {
 
 function Onboarding({
   username,
-  selectedModelName,
-  setChatId,
-  chatId,
-  isNewChat,
-  initialMessages,
   append,
 }: {
   username: string | null | undefined;
-  selectedModelName: string;
-  setChatId: any;
-  chatId: string;
-  isNewChat: boolean;
-  initialMessages: any;
   append: any;
 }) {
   const router = useRouter();

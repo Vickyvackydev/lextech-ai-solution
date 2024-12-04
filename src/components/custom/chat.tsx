@@ -518,15 +518,7 @@ export function Chat({
 
     <div className="w-full pt-8 lg:px-16 px-7">
       {isFirstNewChat ? (
-        <Onboarding
-          username={session?.user?.name}
-          isNewChat={isNewChat}
-          selectedModelName={"LexTech AI.0"}
-          setChatId={setChatId}
-          chatId={chatId!}
-          append={append}
-          initialMessages={initialMessages}
-        />
+        <Onboarding username={session?.user?.name} append={append} />
       ) : (
         <div
           ref={chatContainerRef}
@@ -558,7 +550,11 @@ export function Chat({
           {messages.map((mess) => (
             <div className="flex flex-col gap-y-10 mt-8">
               {mess.role === "user" ? (
-                <div className="w-full flex flex-col items-end justify-end gap-y-2">
+                <Fade
+                  direction="up"
+                  duration={500}
+                  className="w-full flex flex-col items-end justify-end gap-y-2"
+                >
                   <div className="flex items-center gap-x-1">
                     {mess.experimental_attachments !== undefined &&
                       mess.experimental_attachments.length > 0 &&
@@ -587,7 +583,7 @@ export function Chat({
                       formatChatTime(mess?.createdAt)
                     }
                   </span>
-                </div>
+                </Fade>
               ) : (
                 <div className="w-full relative gap-y-2 flex items-start gap-x-2">
                   <Image

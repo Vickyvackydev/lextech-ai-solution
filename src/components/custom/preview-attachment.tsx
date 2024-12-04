@@ -1,13 +1,15 @@
-import { Attachment } from 'ai';
-
-import { LoaderIcon } from './icons';
+import { Attachment } from "ai";
+import { LoaderIcon } from "./icons";
+import { MdClose } from "react-icons/md";
 
 export const PreviewAttachment = ({
   attachment,
   isUploading = false,
+  onRemove,
 }: {
   attachment: Attachment;
   isUploading?: boolean;
+  onRemove?: () => void;
 }) => {
   const { name, url, contentType } = attachment;
 
@@ -15,13 +17,13 @@ export const PreviewAttachment = ({
     <div className="flex flex-col gap-2 max-w-16">
       <div className="w-20 aspect-video bg-muted rounded-md relative flex flex-col items-center justify-center">
         {contentType ? (
-          contentType.startsWith('image') ? (
+          contentType.startsWith("image") ? (
             // NOTE: it is recommended to use next/image for images
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={url}
               src={url}
-              alt={name ?? 'An image attachment'}
+              alt={name ?? "An image attachment"}
               className="rounded-md size-full object-cover"
             />
           ) : (
@@ -36,6 +38,15 @@ export const PreviewAttachment = ({
             <LoaderIcon />
           </div>
         )}
+
+        {/* X Icon for removing the attachment */}
+        <button
+          onClick={onRemove}
+          className="absolute top-1 right-1 text-red-500 hover:text-red-700"
+          aria-label="Remove attachment"
+        >
+          <MdClose size={16} className="text-black" />
+        </button>
       </div>
       <div className="text-xs text-zinc-500 max-w-16 truncate">{name}</div>
     </div>

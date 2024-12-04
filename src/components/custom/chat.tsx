@@ -46,6 +46,7 @@ import {
   formatResponseToParagraphs,
 } from "@/utils-func/functions";
 import { StopIcon } from "./icons";
+import { PreviewAttachment } from "./preview-attachment";
 
 interface CustomResponse extends Response {
   headers: Headers & {
@@ -194,7 +195,8 @@ export function Chat({
   const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("chatId", currentChatId!);
+    // @ts-ignore
+    formData.append("chatId", currentChatId);
 
     try {
       const response = await fetch("/api/upload-pdf", {
@@ -259,6 +261,8 @@ export function Chat({
     }
   };
 
+  console.log(uploadQueue);
+
   // const handleSend = () => {
   //   if (selectedFiles.length > 0) {
   //     setMessages([
@@ -282,10 +286,18 @@ export function Chat({
   //   handleSend();
   // };
 
+  const submitForm = useCallback(() => {
+    handleSubmit(undefined, {
+      experimental_attachments: attachments,
+    });
+
+    setAttachments([]);
+    setInput("");
+  }, [attachments, handleSubmit, setAttachments, setInput]);
   const handleEnterMessage = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevents a new line in the textarea
-      handleSubmit();
+      submitForm();
     }
   };
 
@@ -435,6 +447,13 @@ export function Chat({
     return <div className="space-y-1">{processedLines}</div>;
   };
 
+  const removeAttachment = (attachmentToRemove: Attachment) => {
+    setAttachments((currentAttachments) =>
+      currentAttachments.filter(
+        (attachment) => attachment.url !== attachmentToRemove.url
+      )
+    );
+  };
   // const colorizedContent = useMemo(() => {
   //   if (typeof content === 'string' && role === 'assistant') {
   //     return colorizeText(content);
@@ -613,9 +632,10 @@ export function Chat({
           <div ref={messagesEndRef} />
         </div>
       )}
+
       {isMobile ? (
         <div className="fixed bottom-0 px-6 pb-10 bg-white w-full h-[150px] left-0">
-          <div className="flex items-center gap-x-2">
+          {/* <div className="flex items-center gap-x-2">
             {uploadQueue.length > 0 &&
               attachments?.map((file: any, index: number) => (
                 <Image
@@ -627,7 +647,7 @@ export function Chat({
                   alt={file?.name}
                 />
               ))}
-          </div>
+          </div> */}
 
           <div className="w-full relative border-2 py-2 overflow-hidden border-[#E8ECEF] rounded-2xl flex flex-col items-center h-auto mt-9 px-3">
             <textarea
@@ -693,7 +713,7 @@ export function Chat({
             open ? "md:w-[670px] w-[670px]" : "md:w-[850px] w-[850px]"
           }   px-10 bg-white pb-8 rounded-lg`}
         >
-          <div className="flex items-center gap-x-2">
+          {/* <div className="flex items-center gap-x-2">
             {attachments.length > 0 &&
               uploadQueue?.map((file: any, index: number) => (
                 <Image
@@ -705,9 +725,34 @@ export function Chat({
                   alt={file?.name}
                 />
               ))}
-          </div>
+          </div> */}
 
           <div className="w-full relative border-2 py-2 overflow-hidden border-[#E8ECEF] rounded-2xl flex flex-col items-center h-auto mt-16 px-3">
+            <>
+              {(attachments.length > 0 || uploadQueue.length > 0) && (
+                <div className="flex flex-row gap-2">
+                  {attachments.map((attachment) => (
+                    <PreviewAttachment
+                      key={attachment.url}
+                      attachment={attachment}
+                      onRemove={() => removeAttachment(attachment)}
+                    />
+                  ))}
+
+                  {uploadQueue.map((filename) => (
+                    <PreviewAttachment
+                      key={filename}
+                      attachment={{
+                        url: "",
+                        name: filename,
+                        contentType: "",
+                      }}
+                      isUploading={true}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
             <textarea
               name=""
               placeholder="Type a message..."
@@ -754,7 +799,13 @@ export function Chat({
                   <StopIcon size={17} />
                 </div>
               ) : (
-                <button type="button" onClick={handleSubmit}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    submitForm();
+                  }}
+                >
                   <Image
                     src={SENDER}
                     className={`w-[35px] h-[35px] ${

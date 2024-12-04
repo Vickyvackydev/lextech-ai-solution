@@ -507,6 +507,9 @@ const Sidebar = (props: SidebarProps) => {
               <li
                 onClick={() => {
                   router.push("/");
+                  if (pathname === "/") {
+                    window.location.reload();
+                  }
                   dispatch(setChatStarted(false));
                   dispatch(setOpen(false));
                 }}

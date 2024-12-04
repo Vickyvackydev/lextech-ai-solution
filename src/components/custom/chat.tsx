@@ -689,8 +689,8 @@ export function Chat({
         <Fade
           direction="up"
           duration={2000}
-          className={`fixed bottom-0  ${
-            open ? "w-[670px]" : "w-[850px]"
+          className={`fixed bottom-0 h-fit  ${
+            open ? "md:w-[670px] w-[670px]" : "md:w-[850px] w-[850px]"
           }   px-10 bg-white pb-8 rounded-lg`}
         >
           <div className="flex items-center gap-x-2">

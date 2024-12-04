@@ -518,7 +518,14 @@ export function Chat({
 
     <div className="w-full pt-8 lg:px-16 px-7">
       {isFirstNewChat ? (
-        <Onboarding username={session?.user?.name} />
+        <Onboarding
+          username={session?.user?.name}
+          isNewChat={isNewChat}
+          selectedModelName={"LexTech AI.0"}
+          setChatId={setChatId}
+          chatId={chatId!}
+          initialMessages={initialMessages}
+        />
       ) : (
         <div
           ref={chatContainerRef}

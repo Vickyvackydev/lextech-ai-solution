@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   MAP_CONNECTION,
   WAVE,
@@ -17,12 +18,34 @@ import {
   setSelectedInput,
 } from "@/states/slices/globalReducer";
 import Typewriter from "typewriter-effect";
+import { useChat } from "ai/react";
 
-function Onboarding({ username }: { username: string | null | undefined }) {
+interface CustomResponse extends Response {
+  headers: Headers & {
+    get(name: "X-Chat-Id"): string | null;
+  };
+}
+
+function Onboarding({
+  username,
+  selectedModelName,
+  setChatId,
+  chatId,
+  isNewChat,
+  initialMessages,
+}: {
+  username: string | null | undefined;
+  selectedModelName: string;
+  setChatId: any;
+  chatId: string;
+  isNewChat: boolean;
+  initialMessages: any;
+}) {
   const open = useAppSelector(SelectOpenState);
   const dispatch = useAppDispatch();
   const text = "Can I help you with anything?";
   const isMobile = useMediaQuery("(max-width: 640px)");
+  // const [chatId, setChatId] = useState("")
 
   const letters = text.split("");
 
@@ -40,6 +63,24 @@ function Onboarding({ username }: { username: string | null | undefined }) {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
+
+  const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
+    useChat({
+      //api: 'api/chat',
+      body: {
+        id: chatId,
+        model: selectedModelName,
+        isNewChat,
+      },
+      initialMessages,
+      onResponse: (response: CustomResponse) => {
+        const newChatId = response.headers.get("X-Chat-Id");
+        if (newChatId && isNewChat) {
+          setChatId(newChatId);
+          window.history.replaceState({}, "", `/chat/${newChatId}`);
+        }
+      },
+    });
 
   return (
     <div className="overflow-y-auto w-full pt-8  pb-[150px]">
@@ -119,10 +160,13 @@ function Onboarding({ username }: { username: string | null | undefined }) {
           }   gap-x-2 mt-8 `}
         >
           <div
-            className="border-[#E8ECEF] px-4 pt-8 border gap-y-3 flex flex-col rounded-xl h-[195px] w-full"
-            onClick={() =>
-              dispatch(setSelectedInput("Analyze precedents and case outcomes"))
-            }
+            className="border-[#E8ECEF] cursor-pointer px-4 pt-8 border gap-y-3 flex flex-col rounded-xl h-[195px] w-full"
+            onClick={async () => {
+              append({
+                role: "user",
+                content: "Analyze precedents and case outcomes",
+              });
+            }}
           >
             <Image src={CASE} className="w-[53px] h-[53px]" alt="" />
             <div className="flex flex-col">
@@ -135,10 +179,13 @@ function Onboarding({ username }: { username: string | null | undefined }) {
             </div>
           </div>
           <div
-            className="border-[#E8ECEF] px-4 pt-8 border gap-y-3 flex flex-col rounded-xl h-[195px] w-full"
-            onClick={() =>
-              dispatch(setSelectedInput("Review and summarize legal documents"))
-            }
+            className="border-[#E8ECEF] cursor-pointer px-4 pt-8 border gap-y-3 flex flex-col rounded-xl h-[195px] w-full"
+            onClick={async () => {
+              append({
+                role: "user",
+                content: "Review and summarize legal documents",
+              });
+            }}
           >
             <Image src={DOC_ICON} className="w-[53px] h-[53px]" alt="" />
             <div className="flex flex-col">
@@ -151,10 +198,13 @@ function Onboarding({ username }: { username: string | null | undefined }) {
             </div>
           </div>
           <div
-            className="border-[#E8ECEF] px-4 pt-8 border flex flex-col gap-y-3 rounded-xl h-[195px] w-full"
-            onClick={() =>
-              dispatch(setSelectedInput("Research specific legal topics"))
-            }
+            className="border-[#E8ECEF] cursor-pointer px-4 pt-8 border flex flex-col gap-y-3 rounded-xl h-[195px] w-full"
+            onClick={async () => {
+              append({
+                role: "user",
+                content: "Research specific legal topics",
+              });
+            }}
           >
             <Image src={LEGAL} className="w-[53px] h-[53px]" alt="" />
             <div className="flex flex-col">
@@ -167,10 +217,13 @@ function Onboarding({ username }: { username: string | null | undefined }) {
             </div>
           </div>
           <div
-            className="border-[#E8ECEF] px-4 pt-8 border flex flex-col gap-y-3 rounded-xl h-[195px] w-full"
-            onClick={() =>
-              dispatch(setSelectedInput("Create legal document summaries"))
-            }
+            className="border-[#E8ECEF] cursor-pointer px-4 pt-8 border flex flex-col gap-y-3 rounded-xl h-[195px] w-full"
+            onClick={async () => {
+              append({
+                role: "user",
+                content: "Create legal document summaries",
+              });
+            }}
           >
             <Image src={DRAFT} className="w-[53px] h-[53px]" alt="" />
             <div className="flex flex-col">

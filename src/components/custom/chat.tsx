@@ -47,6 +47,7 @@ import {
 } from "@/utils-func/functions";
 import { StopIcon } from "./icons";
 import { PreviewAttachment } from "./preview-attachment";
+import { FaFilePdf } from "react-icons/fa";
 
 interface CustomResponse extends Response {
   headers: Headers & {
@@ -577,15 +578,25 @@ export function Chat({
                   <div className="flex items-center gap-x-1">
                     {mess.experimental_attachments !== undefined &&
                       mess.experimental_attachments.length > 0 &&
-                      mess.experimental_attachments.map((file: any) => (
-                        <Image
-                          src={file.url}
-                          width={100}
-                          height={100}
-                          className=" object-contain rounded-lg"
-                          alt=""
-                        />
-                      ))}
+                      mess.experimental_attachments.map((file: any) => {
+                        return (
+                          <>
+                            {file.contentType.startsWith("image") ? (
+                              <Image
+                                src={file.url}
+                                width={100}
+                                height={100}
+                                className=" object-contain rounded-lg"
+                                alt=""
+                              />
+                            ) : (
+                              <div className="">
+                                <FaFilePdf size={100} color="red" />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })}
                   </div>
 
                   <div className="px-4 lg:py-5 py-3 border border-[#E8ECEF] rounded-xl h-full w-fit text-wrap">

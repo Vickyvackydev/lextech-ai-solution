@@ -1,6 +1,7 @@
 import { Attachment } from "ai";
 import { LoaderIcon } from "./icons";
 import { MdClose } from "react-icons/md";
+import { FaFilePdf } from "react-icons/fa";
 
 export const PreviewAttachment = ({
   attachment,
@@ -27,7 +28,9 @@ export const PreviewAttachment = ({
               className="rounded-md size-full object-cover"
             />
           ) : (
-            <div className=""></div>
+            <div className="">
+              <FaFilePdf size={30} color="red" />
+            </div>
           )
         ) : (
           <div className=""></div>

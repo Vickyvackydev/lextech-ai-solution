@@ -597,17 +597,13 @@ export function Chat({
             </div>
           ))}
           {isThinking && (
-            <div className="w-full relative gap-y-2 mt-5">
-              <div className="px-4 lg:py-7 py-3 rounded-xl h-full">
+            <div className="w-full flex items-start gap-x-3 relative gap-y-2 mt-5">
+              <Image src={AI_PHOTO} className="w-[30px] h-[30px] " alt="" />
+              <div className="px-4  rounded-xl h-full">
                 <span className="text-[18px] font-semibold text-[#6E6E6E]">
                   <PulseLoader size={isMobile ? 8 : 11} color="#5E5E5E" />
                 </span>
               </div>
-              <Image
-                src={AI_PHOTO}
-                className="w-[30px] h-[30px] absolute right-9 -bottom-4"
-                alt=""
-              />
             </div>
           )}
           <div ref={messagesEndRef} />
